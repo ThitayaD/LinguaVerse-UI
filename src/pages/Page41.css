@@ -1,0 +1,78 @@
+.snap {
+  position: absolute;
+  top: 800px;
+  left: -43px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 475px;
+  height: 43px;
+  cursor: pointer;
+}
+.page-4 {
+  position: relative;
+  background-color: var(--color-darkslateblue-100);
+  width: 100%;
+  height: 844px;
+  overflow: hidden;
+  text-align: center;
+  font-size: 40px;
+  color: var(--color-darkslategray);
+  font-family: var(--font-prompt);
+}
+.camera {
+  position: fixed;
+  top: 50%;
+  right: 25%;
+
+}
+
+.result {
+  position: fixed;
+  top: 20%;
+  left: 100%;
+  width : 100%;
+  height: 844px;
+  display: flex;
+  align-items: center;
+  transition: 0.4s;  
+}
+
+.result.hasPhoto {
+  left: 0;
+}
+
+video{
+  width: 100%;
+  max-width: 100%;
+  height:844;
+  
+}
+
+.snap-photo {
+  position: relative; /* Change to relative to keep it in the flow */
+  margin-top: 500px;
+  left: -175px;
+
+  appearance: none;
+  border: none;
+  outline: none;
+
+  padding: 8px 16px;
+  background-image: linear-gradient(to right, #FF66C4 50%, #82CAFF 50%);
+  background-position: 0%;
+  background-size: 200%;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  transition: background-position 0.4s; /* Specify the property for transition */
+  cursor: pointer;
+}
+
+.snap-photo:hover {
+  background-position: 100%;
+}
+
+
+
