@@ -10,63 +10,96 @@ const Page41 = () => {
 
   const [hasPhoto, setHasPhoto] = useState(false);
 
-  const getVideo = () => {
-    navigator.mediaDevices.getUserMedia({video: { width: 390, height: 844 }})
-      .then(stream => {
-        let video = videoRef.current;
-        video.srcObject = stream; 
+  const getVideo = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 390, height: 844 } });
+      const video = videoRef.current;
+      if (video) {
+        video.srcObject = stream;
         video.play();
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   useEffect(() => {
     getVideo();
-  }, [videoRef])
+  }, [getVideo]);
 
   const takePhoto = () => {
     const width = 390;
     const height = 844;
-  
-    let video = videoRef.current;
-    let photo = photoRef.current;
-  
+
+    const video = videoRef.current;
+    const photo = photoRef.current;
+
     if (!video || !photo) {
       console.error('Video or photo elements are not available.');
       return;
     }
-  
+
     // Set the canvas dimensions
-    photo.width = video.videoWidth;
-    photo.height = video.videoHeight;
-  
-    let ctx = photo.getContext('2d');
+    photo.width = width;
+    photo.height = height;
+
+    const ctx = photo.getContext('2d');
     if (!ctx) {
       console.error('2D rendering context is not available.');
       return;
     }
-  
+
     ctx.drawImage(video, 0, 0, width, height);
-  
+
     setHasPhoto(true);
+
+    // Send the photo to the backend immediately after taking it
+    sendPhotoToBackend(photo);
   };
 
+  const sendPhotoToBackend = (photo) => {
+    if (!photo) {
+      console.error('Photo element is not available.');
+      return;
+    }
+
+    const dataURL = photo.toDataURL('image/jpeg'); // Convert the canvas to a data URL
+
+    // Send the photo to the backend
+    fetch('/upload-photo', {
+      method: 'POST',
+      body: JSON.stringify({ photo: dataURL }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response from the backend
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+
+  const goBack = () => {
+    setHasPhoto(false);
+  }
 
   return (
     <div className="page-4">
       <div className="camera">
-        <video ref={videoRef}></video>
+      <video ref={videoRef} style={{ transform: 'scaleX(-1)' }}></video>
         <button className="snap-photo" onClick={takePhoto}>SNAP!</button>
       </div>
-      <div className={'result'+(hasPhoto ? 'hasPhoto'
-      : '')}>
-        <canvas ref={photoRef}></canvas>
-        <button>CLOSE</button>
+      <div className={`result ${hasPhoto ? 'hasPhoto' : ''}`}>
+        <canvas ref={photoRef} style={{ transform: 'scaleX(-1)' }}></canvas>
+        <button className='back-button' onClick={goBack}Back></button>
       </div>
     </div>
   );
 };
 
 export default Page41;
+
