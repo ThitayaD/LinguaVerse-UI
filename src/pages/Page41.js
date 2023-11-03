@@ -95,7 +95,7 @@ const Page41 = () => {
       </div>
       <div className={`result ${hasPhoto ? 'hasPhoto' : ''}`}>
         <canvas ref={photoRef} style={{ transform: 'scaleX(-1)' }}></canvas>
-        <button className='back-button' onClick={goBack}Back></button>
+        <button className='back-button' onClick={goBack}>BACK</button>
       </div>
     </div>
   );

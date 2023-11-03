@@ -24,7 +24,7 @@
 .camera {
   position: fixed;
   top: 50%;
-  right: 100%; /* Adjust the right property to your desired position */
+  right: 100%; 
 }
 
 
@@ -46,7 +46,7 @@
 video {
   transform: scaleX(-1); /* Mirror the video horizontally */
   width: 100%;
-  max-width: 100%;
+  max-width: none;
   height: 844px;
   margin-left: 200px; /* Adjust the margin-left value to move the video to the right */
 }
@@ -75,5 +75,30 @@ video {
 }
 
 .snap-photo:hover {
+  background-position: 100%;
+}
+
+.back-button {
+  position: relative; /* Change to relative to keep it in the flow */
+  margin-top: 500px;
+  left: -350px;
+
+  appearance: none;
+  border: none;
+  outline: none;
+
+  padding: 8px 100px;
+  background-image: linear-gradient(to right, #FF66C4 50%, #82CAFF 50%);
+  background-position: 0%;
+  background-size: 200%;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  border-radius: 35px;
+  transition: background-position 0.4s; /* Specify the property for transition */
+  cursor: pointer;
+}
+
+.back-button:hover {
   background-position: 100%;
 }
