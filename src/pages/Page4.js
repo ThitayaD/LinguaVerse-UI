@@ -1,35 +1,79 @@
-import { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Page4.css";
 
 const Page4 = () => {
   const navigate = useNavigate();
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [audioChunks, setAudioChunks] = useState([]);
 
   const onIconArrowLeftClick = useCallback(() => {
     navigate("/page-2");
   }, [navigate]);
 
+  const onMicrophoneClick = () => {
+    if (!isRecording) {
+      startRecording();
+    } else {
+      stopRecording();
+    }
+  };
+
+  const startRecording = () => {
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const newMediaRecorder = new MediaRecorder(stream);
+          setMediaRecorder(newMediaRecorder);
+          newMediaRecorder.start();
+
+          newMediaRecorder.ondataavailable = (event) => {
+            setAudioChunks((currentChunks) => [...currentChunks, event.data]);
+          };
+
+          setIsRecording(true);
+        })
+        .catch(err => {
+          console.error("Error accessing the microphone:", err);
+        });
+    } else {
+      console.error("getUserMedia not supported on your browser");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const a = document.createElement('a');
+        a.href = audioUrl;
+        a.download = 'recording.wav';
+        a.click();
+        URL.revokeObjectURL(audioUrl);
+      };
+      setIsRecording(false);
+      setAudioChunks([]);
+    }
+  };
+
   return (
     <div className="page-5">
-      <img
-        className="icon-arrow-left1"
-        alt=""
-        src="/-icon-arrow-left.svg"
-        onClick={onIconArrowLeftClick}
+      {/* Other elements */}
+      <div
+        className="page-5-item"
+        onClick={onMicrophoneClick} // Changed to new handler function
       />
-      <div className="good-day-user1">Good Day User,</div>
-      <div className="take-control1">{`Take Control `}</div>
-      <div className="page-5-child" />
-      <img className="image-4-icon" alt="" src="/image-4@2x.png" />
-      <div className="press-the-button-container2">
-        <span className="press-the-button-container3">
-          <p className="press-the-button1">{`Press the button to `}</p>
-          <p className="press-the-button1">talk to Google Assistant</p>
-        </span>
-      </div>
-      <div className="page-5-item" />
-      <img className="vector-icon" alt="" src="/vector.svg" />
-      <div className="microphone">Microphone</div>
+      <img
+        className="vector-icon"
+        alt="Microphone"
+        src="/vector.svg"
+        onClick={onMicrophoneClick} // Changed to new handler function
+      />
+      <div className="microphone">Microphone {isRecording ? '(Recording...)' : ''}</div>
     </div>
   );
 };
