@@ -1,41 +1,40 @@
-import React, { useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Page4.css";
 
 const Page4 = () => {
   const navigate = useNavigate();
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState(null);
+  const [audioChunks, setAudioChunks] = useState([]);
 
   const onIconArrowLeftClick = useCallback(() => {
     navigate("/page-2");
   }, [navigate]);
 
-  const openMicrophone = () => {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then(function (stream) {
-          // Handle the microphone access, you can start recording or use the stream as needed
+  const onMicrophoneClick = () => {
+    if (!isRecording) {
+      startRecording();
+    } else {
+      stopRecording();
+    }
+  };
 
-          // Send a request to the backend when the microphone is accessed
-          fetch('YOUR_BACKEND_URL', {
-            method: 'POST',
-            body: JSON.stringify({ message: 'Microphone access granted' }),
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-            .then(response => {
-              if (response.ok) {
-                console.log('Request sent to the backend.');
-              } else {
-                console.error('Failed to send request to the backend.');
-              }
-            })
-            .catch(error => {
-              console.error('Error sending request:', error);
-            });
+  const startRecording = () => {
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          const newMediaRecorder = new MediaRecorder(stream);
+          setMediaRecorder(newMediaRecorder);
+          newMediaRecorder.start();
+
+          newMediaRecorder.ondataavailable = (event) => {
+            setAudioChunks((currentChunks) => [...currentChunks, event.data]);
+          };
+
+          setIsRecording(true);
         })
-        .catch(function (err) {
+        .catch(err => {
           console.error("Error accessing the microphone:", err);
         });
     } else {
@@ -43,42 +42,40 @@ const Page4 = () => {
     }
   };
 
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const a = document.createElement('a');
+        a.href = audioUrl;
+        a.download = 'recording.wav';
+        a.click();
+        URL.revokeObjectURL(audioUrl);
+      };
+      setIsRecording(false);
+      setAudioChunks([]);
+    }
+  };
+
   return (
     <div className="page-5">
-      <img
-        className="icon-arrow-left1"
-        alt=""
-        src="/-icon-arrow-left.svg"
-        onClick={onIconArrowLeftClick}
-      />
-      <div className="good-day-user1">Good Day User,</div>
-      <div className="take-control1">{`Take Control `}</div>
-      <div className="page-5-child" />
-      <img
-        className="image-4-icon"
-        alt=""
-        src="/image-4@2x.png"
-      />
-      <div className="press-the-button-container2">
-        <span className="press-the-button-container3">
-          <p className="press-the-button1">{`Press the button to `}</p>
-          <p className="press-the-button1">talk to Google Assistant</p>
-        </span>
-      </div>
+      {/* Other elements */}
       <div
         className="page-5-item"
-        onClick={openMicrophone}
+        onClick={onMicrophoneClick} // Changed to new handler function
       />
       <img
         className="vector-icon"
-        alt=""
+        alt="Microphone"
         src="/vector.svg"
-        onClick={openMicrophone}
+        onClick={onMicrophoneClick} // Changed to new handler function
       />
-      <div className="microphone">Microphone</div>
+      <div className="microphone">Microphone {isRecording ? '(Recording...)' : ''}</div>
     </div>
   );
 };
 
 export default Page4;
-
