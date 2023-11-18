@@ -9,6 +9,7 @@
   width: 475px;
   height: 43px;
   cursor: pointer;
+
 }
 .page-4 {
   position: relative;
@@ -24,34 +25,36 @@
 .camera {
   position: fixed;
   top: 50%;
-  right: 100%; 
+  right: 100%;
+ 
 }
 
 
 .result {
   position: relative;
-  top: 0%;
-  left: 100%;
-  width : 0%;
+  top: 0;
+  left: 100%; /* Set the initial position to be completely off-screen to the right */
+  width: 100%;
   height: 844px;
-  display: flex;
   align-items: center;
-  transition: 0.4s;  
+  display: flex;
+  transition: right 1s; /* Use the left property for the transition */
 }
-
+  
 .result.hasPhoto {
-  left: 0;
+  left: 0px; /* Slide in from the left when hasPhoto is true */
+  transform: scaleX(-1); /* Apply horizontal flip when hasPhoto is true */
 }
+  
+
 
 video {
-  transform: scaleX(-1); /* Mirror the video horizontally */
+  transform: scaleX(-1);  /* Mirror the video horizontally */
   width: 100%;
   max-width: none;
   height: 844px;
   margin-left: 200px; /* Adjust the margin-left value to move the video to the right */
 }
-
-
 
 .snap-photo {
   position: relative; /* Change to relative to keep it in the flow */
@@ -62,7 +65,7 @@ video {
   border: none;
   outline: none;
 
-  padding: 8px 100px;
+  padding: 8px 50px;
   background-image: linear-gradient(to right, #FF66C4 50%, #82CAFF 50%);
   background-position: 0%;
   background-size: 200%;
@@ -76,18 +79,21 @@ video {
 
 .snap-photo:hover {
   background-position: 100%;
+  transform: scaleX(1);
+
 }
 
 .back-button {
   position: relative; /* Change to relative to keep it in the flow */
   margin-top: 500px;
-  left: -350px;
+  left: -380px;
+  transform: scaleX(-1);
 
   appearance: none;
   border: none;
   outline: none;
 
-  padding: 8px 100px;
+  padding: 10px 150px;
   background-image: linear-gradient(to right, #FF66C4 50%, #82CAFF 50%);
   background-position: 0%;
   background-size: 200%;
@@ -101,4 +107,39 @@ video {
 
 .back-button:hover {
   background-position: 100%;
+}
+
+.icon-arrow-left {
+  position: absolute;
+  height: 40%; /* Increased height */
+  width: 36%; /* Increased width */
+  top: -480%;
+  right: 50.41%;
+  bottom: 94.05%;
+  left: -40%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  cursor: pointer;
+}
+
+.custom-file-upload {
+  position: relative;
+  margin-top: 500px;
+  left: -250px;
+
+  appearance: none;
+  border: none;
+  outline: none;
+
+  padding: 5px 30px;
+  background-image: linear-gradient(to right, #FF66C4 50%, #82CAFF 50%);
+  background-position: 0%;
+  background-size: 200%;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 35px;
+  transition: background-position 0.4s;
+  cursor: pointer;
 }

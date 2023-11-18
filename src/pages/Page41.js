@@ -5,6 +5,10 @@ import "./Page41.css";
 const Page41 = () => {
   const navigate = useNavigate();
 
+  const onIconArrowLeftClick = useCallback(() => {
+    navigate("/page-2");
+  }, [navigate]);
+
   const videoRef = useRef(null);
   const photoRef = useRef(null);
 
@@ -30,32 +34,39 @@ const Page41 = () => {
   const takePhoto = () => {
     const width = 390;
     const height = 844;
-
+  
     const video = videoRef.current;
     const photo = photoRef.current;
-
+  
     if (!video || !photo) {
       console.error('Video or photo elements are not available.');
       return;
     }
-
-    // Set the canvas dimensions
+  
     photo.width = width;
     photo.height = height;
-
+  
     const ctx = photo.getContext('2d');
     if (!ctx) {
       console.error('2D rendering context is not available.');
       return;
     }
-
+  
+    // Flip the canvas horizontally
+    ctx.setTransform(-1, 0, 0, 1, width, 0);
+  
+    // Draw the video frame on the canvas
     ctx.drawImage(video, 0, 0, width, height);
-
+  
+    // Reset the transformation matrix
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  
     setHasPhoto(true);
-
+  
     // Send the photo to the backend immediately after taking it
     sendPhotoToBackend(photo);
   };
+  
 
   const sendPhotoToBackend = (photo) => {
     if (!photo) {
@@ -83,18 +94,73 @@ const Page41 = () => {
       });
   };
 
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const image = new Image();
+        image.onload = () => {
+          const width = 390;
+          const height = 844;
+  
+          const photo = photoRef.current;
+          if (!photo) {
+            console.error('Photo element is not available.');
+            return;
+          }
+  
+          photo.width = width;
+          photo.height = height;
+  
+          const ctx = photo.getContext('2d');
+          if (!ctx) {
+            console.error('2D rendering context is not available.');
+            return;
+          }
+  
+          // Flip the canvas horizontally
+          ctx.setTransform(-1, 0, 0, 1, width, 0);
+  
+          // Draw the mirrored image on the canvas
+          ctx.drawImage(image, 0, 0, width, height);
+  
+          // Reset the transformation matrix
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+  
+          setHasPhoto(true);
+  
+          // Send the photo to the backend after uploading
+          sendPhotoToBackend(photo);
+        };
+        image.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  
+
   const goBack = () => {
     setHasPhoto(false);
-  }
+  };
 
   return (
     <div className="page-4">
       <div className="camera">
-      <video ref={videoRef} style={{ transform: 'scaleX(-1)' }}></video>
+        <img
+          className="icon-arrow-left"
+          alt=""
+          src="/-icon-arrow-left.svg"
+          onClick={onIconArrowLeftClick}
+        />
+        <video autoPlay={true} playsInline={true} muted={true} ref={videoRef} ></video>
         <button className="snap-photo" onClick={takePhoto}>SNAP!</button>
+        <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} id="file-upload" />
+        <label htmlFor="file-upload" className="custom-file-upload">Upload Photo</label>
       </div>
       <div className={`result ${hasPhoto ? 'hasPhoto' : ''}`}>
-        <canvas ref={photoRef} style={{ transform: 'scaleX(-1)' }}></canvas>
+        <canvas ref={photoRef} ></canvas>
         <button className='back-button' onClick={goBack}>BACK</button>
       </div>
     </div>
@@ -102,4 +168,8 @@ const Page41 = () => {
 };
 
 export default Page41;
+
+
+
+
 
