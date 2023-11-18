@@ -143,3 +143,7 @@ video {
   transition: background-position 0.4s;
   cursor: pointer;
 }
+
+.mirror {
+  transform: scaleX(-1);
+}

@@ -16,7 +16,7 @@ const Page41 = () => {
 
   const getVideo = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 390, height: 844 } });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 390, height: 844, facingMode: "environment" } });
       const video = videoRef.current;
       if (video) {
         video.srcObject = stream;
@@ -78,7 +78,7 @@ const Page41 = () => {
         const formData = new FormData();
         formData.append('file', blob, 'photo.png');
 
-        fetch('http://localhost:5000/upload-photo', {
+        fetch('https://localhost:5000/upload-photo', {
             method: 'POST',
             body: formData,
         })
@@ -117,12 +117,12 @@ const Page41 = () => {
             return;
           }
   
-          // Flip the canvas horizontally
+              // Flip the canvas horizontally
           ctx.setTransform(-1, 0, 0, 1, width, 0);
-  
-          // Draw the mirrored image on the canvas
-          ctx.drawImage(image, 0, 0, width, height);
-  
+
+          // Draw the video frame on the canvas
+          ctx.drawImage(video, 0, 0, width, height);
+
           // Reset the transformation matrix
           ctx.setTransform(1, 0, 0, 1, 0, 0);
   
@@ -152,7 +152,7 @@ const Page41 = () => {
           src="/-icon-arrow-left.svg"
           onClick={onIconArrowLeftClick}
         />
-        <video autoPlay={true} playsInline={true} muted={true} ref={videoRef} ></video>
+        <video className="mirror" autoPlay={true} playsInline={true} muted={true} ref={videoRef} ></video>
         <button className="snap-photo" onClick={takePhoto}>SNAP!</button>
         <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} id="file-upload" />
         <label htmlFor="file-upload" className="custom-file-upload">Upload Photo</label>
