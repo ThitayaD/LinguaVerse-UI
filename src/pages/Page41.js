@@ -51,7 +51,6 @@ const Page41 = () => {
         console.error('2D rendering context is not available.');
         return;
     }
-<<<<<<< HEAD
   
     // Flip the canvas horizontally
     ctx.setTransform(-1, 0, 0, 1, width, 0);
@@ -68,90 +67,6 @@ const Page41 = () => {
     sendPhotoToBackend(photo);
   };
   
-=======
-
-    // Draw the current frame from the video element onto the canvas
-    ctx.drawImage(video, 0, 0, width, height);
-
-    // Now send the photo to the backend
-    sendPhotoToBackend(photo);
-
-    setHasPhoto(true);
-};
-
-  // const takePhoto = () => {
-  //   const width = 390;
-  //   const height = 844;
-
-  //   const video = videoRef.current;
-  //   const photo = photoRef.current;
-
-  //   if (!video || !photo) {
-  //     console.error('Video or photo elements are not available.');
-  //     return;
-  //   }
-
-  //   // Set the canvas dimensions
-  //   photo.width = width;
-  //   photo.height = height;
-
-  //   const ctx = photo.getContext('2d');
-  //   if (!ctx) {
-  //     console.error('2D rendering context is not available.');
-  //     return;
-  //   }
-  //   sendPhotoToBackend(photo);
-
-  //   ctx.drawImage(video, 0, 0, width, height);
-
-  //   setHasPhoto(true);
-
-  //   // Send the photo to the backend immediately after taking it
-  // };
-
-  // const sendPhotoToBackend = (photo) => {
-  //   if (!photo) {
-  //     console.error('Photo element is not available.');
-  //     return;
-  //   }
-
-  //   photo.toBlob(blob => {
-  //       const formData = new FormData();
-  //       formData.append('file', blob, 'photo.jpg');
-
-  //       fetch('/upload-photo', {
-  //           method: 'POST',
-  //           body: formData,
-  //       })
-  //       .then(response => response.json())
-  //       .then(data => {
-  //           console.log(data);
-  //       })
-  //       .catch(error => {
-  //           console.error('Error:', error);
-  //       });
-  //   }, 'image/jpeg');
-
-  //   const dataURL = photo.toDataURL('image/jpeg'); // Convert the canvas to a data URL
-
-  //   // Send the photo to the backend
-  //   fetch('/upload-photo', {
-  //     method: 'POST',
-  //     body: JSON.stringify({ photo: dataURL }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       // Handle the response from the backend
-  //       console.log(data);
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //     });
-  // };
->>>>>>> 1fa4febea268302842fd51264d7034f9a33c4bb9
 
   const sendPhotoToBackend = (photo) => {
     if (!photo) {
@@ -251,11 +166,3 @@ const Page41 = () => {
 };
 
 export default Page41;
-<<<<<<< HEAD
-
-
-
-
-
-=======
->>>>>>> 1fa4febea268302842fd51264d7034f9a33c4bb9
