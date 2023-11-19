@@ -25,17 +25,15 @@
 .camera {
   position: fixed;
   top: 50%;
-  right: 100%;
- 
+  right: 100%; 
 }
-
 
 .result {
   position: relative;
   top: 0;
   left: 100%; /* Set the initial position to be completely off-screen to the right */
-  width: 100%;
-  height: 844px;
+  width: 80%;
+  height: 80%;
   align-items: center;
   display: flex;
   transition: right 1s; /* Use the left property for the transition */
@@ -49,7 +47,7 @@
 
 
 video {
-  transform: scaleX(-1);  /* Mirror the video horizontally */
+  /* transform: scaleX(-1)*/  /* Mirror the video horizontally */
   width: 100%;
   max-width: none;
   height: 844px;
@@ -144,6 +142,3 @@ video {
   cursor: pointer;
 }
 
-.mirror {
-  transform: scaleX(-1);
-}

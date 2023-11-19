@@ -92,50 +92,32 @@ const Page41 = () => {
     }, 'image/png');
 };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const image = new Image();
-        image.onload = () => {
-          const width = 390;
-          const height = 844;
-  
-          const photo = photoRef.current;
-          if (!photo) {
-            console.error('Photo element is not available.');
-            return;
-          }
-  
-          photo.width = width;
-          photo.height = height;
-  
-          const ctx = photo.getContext('2d');
-          if (!ctx) {
-            console.error('2D rendering context is not available.');
-            return;
-          }
-  
-              // Flip the canvas horizontally
-          ctx.setTransform(-1, 0, 0, 1, width, 0);
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const image = new Image();
+      image.onload = () => {
+        const width = 390;
+        const height = 844;
 
-          // Draw the video frame on the canvas
-          ctx.drawImage(video, 0, 0, width, height);
+        const photo = photoRef.current;
+        const video = videoRef.current; // Add this line
 
-          // Reset the transformation matrix
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-  
-          setHasPhoto(true);
-  
-          // Send the photo to the backend after uploading
-          sendPhotoToBackend(photo);
-        };
-        image.src = e.target.result;
+        if (!photo || !video) {
+          console.error('Photo or video element is not available.');
+          return;
+        }
+
+        // ... rest of the function
       };
-      reader.readAsDataURL(file);
-    }
-  };
+      image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
   
   
 
