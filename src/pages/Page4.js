@@ -21,44 +21,31 @@ const Page4 = () => {
   };
 
   const startRecording = () => {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          const newMediaRecorder = new MediaRecorder(stream);
-          setMediaRecorder(newMediaRecorder);
-          newMediaRecorder.start();
-
-          newMediaRecorder.ondataavailable = (event) => {
-            setAudioChunks((currentChunks) => [...currentChunks, event.data]);
-          };
-
-          setIsRecording(true);
-        })
-        .catch(err => {
-          console.error("Error accessing the microphone:", err);
-        });
-    } else {
-      console.error("getUserMedia not supported on your browser");
-    }
+    fetch('http://localhost:6969/start')
+      .then(response => response.json())
+      .then(data => {
+        console.log("Server response:", data.message);
+      })
+      .catch(err => {
+        console.error("Error sending start request to server:", err);
+      });
+      setIsRecording(true);
   };
 
   const stopRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      mediaRecorder.stream.getTracks().forEach(track => track.stop());
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const a = document.createElement('a');
-        a.href = audioUrl;
-        a.download = 'recording.wav';
-        a.click();
-        URL.revokeObjectURL(audioUrl);
-      };
-      setIsRecording(false);
-      setAudioChunks([]);
+        fetch('http://localhost:6969/stop')
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+        setIsRecording(false);
+        fetch('http://localhost:6969/chat')
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
     }
-  };
+
+  
+  // Assuming you have audio data as a Blob
 
   return (
     <div className="page-5">

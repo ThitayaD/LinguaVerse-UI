@@ -78,7 +78,7 @@ const Page41 = () => {
         const formData = new FormData();
         formData.append('file', blob, 'photo.png');
 
-        fetch('https://localhost:5000/upload-photo', {
+        fetch('http://localhost:9000/upload-photo', {
             method: 'POST',
             body: formData,
         })
